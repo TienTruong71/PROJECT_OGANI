@@ -4,8 +4,13 @@ const AuthController = require ("../controllers/auth.controller")
 
 // Route GET /login: Render trang login
 router.get("/login", (req, res) => {
+    const message = req.session.message || null;
+    const isSuccess = req.session.isSuccess || null;
+    req.session.isSuccess = null;
+    req.session.message = null; // Xóa thông báo sau khi hiển thị
     res.render("login", {
-        pageTitle: "Đăng nhập"
+        message,
+        isSuccess
     });
 });
 

@@ -48,7 +48,7 @@
                                     <h5>{{this.title}}</h5>
                                 </td>
                                 <td class="shoping__cart__price" data-price="{{this.sellPrice}}">
-                                    ${{this.sellPrice}}
+                                    {{formatCurrency this.sellPrice}}
                                 </td>
                                 <td class="shoping__cart__quantity">
                                     <div class="pro-qty">
@@ -57,7 +57,7 @@
                                     </div>
                                 </td>
                                 <td class="shoping__cart__total" data-item-id="{{this._id}}">
-                                    ${{this.total}}
+                                    {{formatCurrency this.total}}
                                 </td>
                                 <td class="shoping__cart__item__close">
                                     <span class="icon_close remove-item" data-item-id="{{this._id}}"></span>
@@ -91,8 +91,8 @@
                 <div class="shoping__checkout">
                     <h5>TỔNG CỘNG</h5>
                     <ul>
-                        <li>Tạm tính<span id="subtotal">${{subtotal}}</span></li>
-                        <li>Tổng <span id="total">${{subtotal}}</span></li>
+                        <li>Tạm tính<span id="subtotal">{{formatCurrency subtotal}}</span></li>
+                        <li>Tổng <span id="total">{{formatCurrency subtotal}}</span></li>
                     </ul>
                     <a href="/order/checkout" class="primary-btn">THANH TOÁN</a>
                 </div>
@@ -123,6 +123,23 @@
                 updateCartItemQuantity(itemId, newValue);
             });
         });
+        
+        // Lắng nghe sự kiện click trên nút tăng/giảm số lượng
+        const qtyButtons = document.querySelectorAll('.qtybtn');
+        qtyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Chờ 50ms để giá trị input được cập nhật từ main.js
+                setTimeout(() => {
+                    const input = this.closest('.pro-qty').querySelector('input');
+                    const itemId = input.getAttribute('data-item-id');
+                    const newValue = parseInt(input.value);
+                    
+                    if (!isNaN(newValue) && newValue >= 1) {
+                        updateCartItemQuantity(itemId, newValue);
+                    }
+                }, 50);
+            });
+        });
 
         // Xử lý sự kiện khi nhấn nút xóa
         const removeButtons = document.querySelectorAll('.remove-item');
@@ -148,17 +165,24 @@
                         // Cập nhật tổng tiền của sản phẩm
                         const totalElement = document.querySelector(`.shoping__cart__total[data-item-id="${itemId}"]`);
                         if (totalElement) {
-                            totalElement.textContent = '$' + data.itemTotal;
+                            // Đảm bảo data.itemTotal là số trước khi định dạng
+                            const itemTotal = parseFloat(data.itemTotal) || 0;
+                            // Format tiền tệ: thêm dấu chấm ngăn cách hàng nghìn và đ ở cuối
+                            totalElement.textContent = new Intl.NumberFormat('vi-VN').format(itemTotal) + ' đ';
                         }
 
                         // Cập nhật tổng tiền của giỏ hàng
                         const subtotalElement = document.getElementById('subtotal');
                         const totalElement2 = document.getElementById('total');
                         if (subtotalElement) {
-                            subtotalElement.textContent = '$' + data.subtotal;
+                            // Đảm bảo data.subtotal là số trước khi định dạng
+                            const subtotal = parseFloat(data.subtotal) || 0;
+                            subtotalElement.textContent = new Intl.NumberFormat('vi-VN').format(subtotal) + ' đ';
                         }
                         if (totalElement2) {
-                            totalElement2.textContent = '$' + data.subtotal;
+                            // Đảm bảo data.subtotal là số trước khi định dạng
+                            const subtotal = parseFloat(data.subtotal) || 0;
+                            totalElement2.textContent = new Intl.NumberFormat('vi-VN').format(subtotal) + ' đ';
                         }
 
                         // Cập nhật số lượng sản phẩm trong header

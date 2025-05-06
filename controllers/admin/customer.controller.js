@@ -6,9 +6,6 @@ class AdminCustomerController {
       const user = req.session.user || null;
       const customers = await User.find({ role: 1 }).lean(); 
       console.log("Danh sách khách hàng:", customers); 
-
-      
-
       res.render("admin/manage_customer", {
         pageTitle: "Customer Management",
         user,
@@ -18,7 +15,7 @@ class AdminCustomerController {
       console.error('Lỗi lấy danh sách khách hàng:', error);
       res.send('Đã xảy ra lỗi khi lấy danh sách khách hàng');
     }
-  }
+}
 
 
   async lockCustomer(req, res) {
@@ -79,8 +76,8 @@ class AdminCustomerController {
       const user = await User.findById(userId);
       if (!user) return res.status(404).send("Không tìm thấy khách hàng");
   
-      const ranks = ["Bạc", "Vàng", "Kim cương"];
-      const currentIndex = ranks.indexOf(user.rank || "Bạc");
+      const ranks = ["SILVER", "GOLD", "DIAMOND"];
+      const currentIndex = ranks.indexOf(user.rank || "SILVER");
       const nextIndex = (currentIndex + 1) % ranks.length;
   
       user.rank = ranks[nextIndex];

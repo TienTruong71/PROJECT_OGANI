@@ -29,10 +29,11 @@
                             <p>Ngày đặt hàng: {{formatDate order.orderDate "DD/MM/YYYY HH:mm"}}</p>
                             <p>Trạng thái: 
                                 <span class="badge 
-                                    {{#if (eq order.status 'Pending')}}badge-warning{{/if}}
+                                    {{#if (eq order.status 'Pending')}}badge-warning {{/if}}
                                     {{#if (eq order.status 'Confirmed')}}badge-info{{/if}}
                                     {{#if (eq order.status 'Shipping')}}badge-primary{{/if}}
                                     {{#if (eq order.status 'Completed')}}badge-success{{/if}}
+                                     {{#if (eq order.status 'RequestCancelled')}}badge-danger{{/if}}
                                     {{#if (eq order.status 'Cancelled')}}badge-danger{{/if}}
                                 ">
                                     {{order.status}}
@@ -108,7 +109,7 @@
                                     {{#if order.discount}}
                                     <li>Giảm giá <span>-{{formatCurrency order.discount}}</span></li>
                                     {{/if}}
-                                    <li class="order-total">Tổng cộng <span>{{formatCurrency order.totalAmount}}</span></li>
+                                    <li class="order-total">Tổng cộng <span>{{formatCurrency order.totalAmount}} </span></li>
                                 </ul>
                             </div>
                         </div>

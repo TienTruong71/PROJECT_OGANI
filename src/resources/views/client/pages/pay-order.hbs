@@ -102,11 +102,10 @@
                             <div class="checkout__order__subtotal">Tạm tính <span>{{formatCurrency subtotal}}</span>
                             </div>
                             <div class="checkout__order__subtotal">VAT (10%) <span>{{formatCurrency vat}}</span></div>
-                            <div class="checkout__order__subtotal">Phí vận chuyển <span>{{formatCurrency
-                                    shippingFee}}</span></div>
-                            <div class="checkout__order__total">Tổng cộng <span>{{formatCurrency totalAmount}}</span>
+                           <div class="checkout__order__subtotal">Phí vận chuyển <span class="shipping-fee">{{formatCurrency shippingFee}}</span></div>
+                            <div class="checkout__order__total">Tổng cộng <span class="total-amount">{{formatCurrency totalAmount}}</span></div>
+                                <button type="submit" class="site-btn">ĐẶT HÀNG</button>
                             </div>
-                            <button type="submit" class="site-btn">ĐẶT HÀNG</button>
                         </div>
                     </div>
                 </div>
@@ -115,3 +114,36 @@
     </div>
 </section>
 <!-- Checkout Section End -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const shippingRadios = document.querySelectorAll('input[name="shippingMethod"]');
+        const shippingFeeEl = document.querySelector('.checkout__order__subtotal span.shipping-fee');
+        const totalAmountEl = document.querySelector('.checkout__order__total span.total-amount');
+
+        const subtotal = {{subtotal}};
+        const vat = {{vat}};
+
+        function formatCurrency(number) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
+        }
+
+        function updateFees() {
+            let shippingFee = 30000; // mặc định
+            if (document.getElementById('express').checked) {
+                shippingFee = 50000;
+            }
+
+            const totalAmount = subtotal + vat + shippingFee;
+
+            shippingFeeEl.textContent = formatCurrency(shippingFee);
+            totalAmountEl.textContent = formatCurrency(totalAmount);
+        }
+
+        shippingRadios.forEach(radio => {
+            radio.addEventListener('change', updateFees);
+        });
+
+        updateFees(); // Khởi tạo lần đầu
+    });
+</script>

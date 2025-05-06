@@ -8,15 +8,10 @@ class AdminStaffController {
       const staffList = await User.find({ role: 2 }).lean();
       console.log("Danh sách khách hàng:", staffList);
 
-      const modifiedStaff = staffList.map(s => ({
-        ...s,
-        isActive: s.status === "active"
-      }));
-
       res.render("admin/manage_staff", {
         pageTitle: "Staff Management",
         user,
-        staffs: modifiedStaff
+        staffList
       });
     } catch (err) {
       console.error("Lỗi khi lấy danh sách nhân viên:", err);
@@ -142,7 +137,10 @@ class AdminStaffController {
       const existing = await User.findOne({ $or: [{ username }, { emailAddress }] });
   
       if (existing) {
-        return res.send("Tên đăng nhập hoặc email đã tồn tại.");
+        return res.render("admin/staff_add", {
+          user: req.session.user,
+          errorMessage: "Tên đăng nhập hoặc email đã tồn tại!",
+        });
       }
   
       const newUser = new User({

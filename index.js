@@ -13,8 +13,11 @@ const routeClient = require("./routes/client/index.route");
 const routeAdmin = require("./routes/admin/index.route");
 const authRoute = require("./routes/auth.route");
 const waitingRoute = require("./routes/waiting.route");
+const forgotRoute = require("./routes/forgot.route");
 const systemConfig = require("./config/system.js")
 const loadCatalogList = require('./middleware/catalog.middleware.js');
+
+
 const port = process.env.PORT;
 
 app.use(express.static(path.join(__dirname, 'src', 'public')));
@@ -82,6 +85,7 @@ routeAdmin(app);
 routeClient(app);
 app.use("/", authRoute);
 app.use("/", waitingRoute);
+app.use("/", forgotRoute);
 app.use('/', catalogRouter);
 
 app.locals.prefixAdmin = systemConfig.prefixAdmin;

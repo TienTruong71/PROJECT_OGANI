@@ -1,6 +1,8 @@
 const Order = require('../../models/order.model');
 const Cart = require('../../models/cart.model');
 const User = require('../../models/user.model');
+const Product = require('../../models/product.model');
+const { calculateTotals } = require('../../config/helper');
 
 class OrderController {
     // Hiển thị trang thanh toán
@@ -163,7 +165,7 @@ class OrderController {
                 });
                 
                 // Tính toán tổng tiền
-                newOrder.calculateTotals();
+                calculateTotals(newOrder);
                 
                 console.log('New order created:', {
                     userId: newOrder.userId,
@@ -179,6 +181,42 @@ class OrderController {
                 // Xóa giỏ hàng
                 console.log('Clearing cart for user:', userId);
                 await Cart.updateOne({ userId }, { items: [] });
+                
+                // Cập nhật trạng thái sản phẩm thành SOLD
+                console.log('Updating product status to SOLD');
+                for (const item of newOrder.items) {
+                    try {
+                        const product = await Product.findById(item.productId);
+                        if (product) {
+                            // Tìm tất cả sản phẩm có cùng mã import và đang còn hàng
+                            const productsToUpdate = await Product.find({
+                                import: product.import,
+                                status: { $in: ['IN_STOCK', 'ON_SALE'] }
+                            }).limit(item.quantity);
+                            
+                            // Cập nhật trạng thái thành SOLD và thêm ngày bán
+                            const updatePromises = productsToUpdate.map(p => {
+                                return Product.updateOne(
+                                    { _id: p._id },
+                                    { 
+                                        $set: { 
+                                            status: 'SOLD',
+                                            sellDate: new Date() 
+                                        } 
+                                    }
+                                );
+                            });
+                            
+                            const updateResults = await Promise.all(updatePromises);
+                            const updatedCount = updateResults.reduce((sum, result) => sum + result.modifiedCount, 0);
+                            
+                            console.log(`Updated ${updatedCount} products with import code ${product.import} to SOLD`);
+                        }
+                    } catch (err) {
+                        console.error(`Error updating product status for item ${item.productId}:`, err);
+                        // Tiếp tục với các sản phẩm khác
+                    }
+                }
                 
                 // Chuyển hướng đến trang chi tiết đơn hàng
                 console.log('Redirecting to order detail page');
@@ -234,13 +272,66 @@ class OrderController {
             
             const userId = req.session.user._id;
             
-            // Lấy danh sách đơn hàng
-            const orders = await Order.find({ userId }).sort({ createdAt: -1 }).lean();
+            // Lấy trạng thái từ query parameter
+            const status = req.query.status;
+            
+            // Lấy tham số trang hiện tại, mặc định là 1
+            const page = parseInt(req.query.page) || 1;
+            const limit = 10; // Số đơn hàng mỗi trang
+            const skip = (page - 1) * limit;
+            
+            // Tạo điều kiện tìm kiếm
+            const findCondition = { userId };
+            
+            // Nếu có trạng thái, thêm vào điều kiện tìm kiếm
+            if (status) {
+                findCondition.status = status;
+            }
+            
+            console.log('Tìm đơn hàng với điều kiện:', findCondition);
+            
+            // Đếm tổng số đơn hàng phù hợp với điều kiện
+            const totalOrders = await Order.countDocuments(findCondition);
+            
+            // Tính tổng số trang
+            const totalPages = Math.ceil(totalOrders / limit);
+            
+            // Lấy danh sách đơn hàng theo điều kiện, có phân trang
+            const orders = await Order.find(findCondition)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean();
+            
+            console.log(`Tìm thấy ${totalOrders} đơn hàng${status ? ` với trạng thái ${status}` : ''}, hiển thị trang ${page}/${totalPages}`);
+            
+            // Tạo mảng các trang để hiển thị phân trang
+            const pages = [];
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push({
+                    number: i,
+                    active: i === page,
+                    url: `/order/history?${status ? `status=${status}&` : ''}page=${i}`
+                });
+            }
+            
+            // Tạo URL cho nút trang trước và trang sau
+            const prevPage = page > 1 ? `/order/history?${status ? `status=${status}&` : ''}page=${page - 1}` : null;
+            const nextPage = page < totalPages ? `/order/history?${status ? `status=${status}&` : ''}page=${page + 1}` : null;
             
             res.render('client/pages/order-history', {
                 layout: 'main',
                 pageTitle: "Lịch sử đơn hàng",
                 orders,
+                status, // Truyền trạng thái hiện tại vào view
+                pagination: {
+                    page,
+                    totalPages,
+                    totalOrders,
+                    pages,
+                    prevPage,
+                    nextPage
+                },
                 user: req.session.user,
                 currentPage: "cart"
             });
@@ -274,10 +365,48 @@ class OrderController {
             }
             
             // Cập nhật trạng thái đơn hàng
-            order.status = 'Cancelled';
+            order.status = 'RequestCancelled';
             await order.save();
             
             console.log(`Đơn hàng ${orderId} đã bị hủy bởi người dùng ${userId}`);
+            
+            // Khôi phục trạng thái sản phẩm
+            console.log('Restoring product status');
+            for (const item of order.items) {
+                try {
+                    // Tìm sản phẩm gốc
+                    const product = await Product.findById(item.productId);
+                    if (product) {
+                        // Tìm các sản phẩm có cùng mã import, đang SOLD và được bán sau khi đơn hàng được tạo
+                        const productsToRestore = await Product.find({
+                            import: product.import,
+                            status: 'SOLD',
+                            sellDate: { $gte: order.createdAt }
+                        }).limit(item.quantity);
+                        
+                        // Cập nhật trạng thái thành IN_STOCK và xóa ngày bán
+                        const updatePromises = productsToRestore.map(p => {
+                            return Product.updateOne(
+                                { _id: p._id },
+                                { 
+                                    $set: { 
+                                        status: 'IN_STOCK',
+                                        sellDate: null 
+                                    } 
+                                }
+                            );
+                        });
+                        
+                        const updateResults = await Promise.all(updatePromises);
+                        const restoredCount = updateResults.reduce((sum, result) => sum + result.modifiedCount, 0);
+                        
+                        console.log(`Restored ${restoredCount} products with import code ${product.import} to IN_STOCK`);
+                    }
+                } catch (err) {
+                    console.error(`Error restoring product status for item ${item.productId}:`, err);
+                    // Tiếp tục với các sản phẩm khác
+                }
+            }
             
             // Chuyển hướng đến trang chi tiết đơn hàng
             res.redirect(`/order/detail/${orderId}`);

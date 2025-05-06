@@ -22,8 +22,47 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="order-history__header">
-                    <h4>Đơn hàng của tôi</h4>
+                    <h3><strong>Đơn hàng của tôi</strong></h3>
                 </div>
+
+                <!-- Status Filters Begin -->
+                <ul class="nav nav-pills mb-4 gap-2 flex-wrap status-filters mt-4" id="orderTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a href="/order/history" class="nav-link status-filter {{#unless status}}active{{/unless}}"
+                            data-status="">Tất cả</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="/order/history?status=Pending"
+                            class="nav-link status-filter status-pending {{#if (eq status 'Pending')}}active{{/if}}"
+                            data-status="Pending">Chờ xác nhận</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="/order/history?status=Confirmed"
+                            class="nav-link status-filter status-confirmed {{#if (eq status 'Confirmed')}}active{{/if}}"
+                            data-status="Confirmed">Đã xác nhận</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="/order/history?status=Shipping"
+                            class="nav-link status-filter status-shipping {{#if (eq status 'Shipping')}}active{{/if}}"
+                            data-status="Shipping">Đang giao</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="/order/history?status=Completed"
+                            class="nav-link status-filter status-completed {{#if (eq status 'Completed')}}active{{/if}}"
+                            data-status="Completed">Hoàn thành</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="/order/history?status=RequestCancelled"
+                            class="nav-link status-filter status-cancelled {{#if (eq status 'RequestCancelled')}}active{{/if}}"
+                            data-status="RequestCancelled">Yêu cầu hủy</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="/order/history?status=Cancelled"
+                            class="nav-link status-filter status-cancelled {{#if (eq status 'Cancelled')}}active{{/if}}"
+                            data-status="Cancelled">Đã hủy</a>
+                    </li>
+                </ul>
+                <!-- Status Filters End -->
 
                 {{#if orders.length}}
                 <div class="order-history__list mt-4">
@@ -31,12 +70,12 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Mã đơn hàng</th>
-                                    <th>Ngày đặt</th>
-                                    <th>Tổng tiền</th>
-                                    <th>Trạng thái</th>
-                                    <th>Thanh toán</th>
-                                    <th>Thao tác</th>
+                                    <th width="18%">Mã đơn hàng</th>
+                                    <th width="15%">Ngày đặt</th>
+                                    <th width="12%" class="text-nowrap">Tổng tiền</th>
+                                    <th width="20%" class="text-center">Trạng thái</th>
+                                    <th width="15%" class="text-center">Thanh toán</th>
+                                    <th width="20%">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,26 +84,63 @@
                                     <td>#{{this._id}}</td>
                                     <td>{{formatDate this.orderDate "DD/MM/YYYY HH:mm"}}</td>
                                     <td>{{formatCurrency this.totalAmount}}</td>
-                                    <td>
-                                        <span class="badge 
-                                            {{#if (eq this.status 'Pending')}}badge-warning{{/if}}
-                                            {{#if (eq this.status 'Confirmed')}}badge-info{{/if}}
-                                            {{#if (eq this.status 'Shipping')}}badge-primary{{/if}}
-                                            {{#if (eq this.status 'Completed')}}badge-success{{/if}}
-                                            {{#if (eq this.status 'Cancelled')}}badge-danger{{/if}}
-                                        ">
-                                            {{this.status}}
-                                        </span>
+                                    <td class="text-center">
+                                        <div class="status-badge-wrapper justify-content-center">
+                                            {{#if (eq this.status 'Pending')}}
+                                            <span class="status-badge status-pending">
+                                                <i class="fas fa-clock mr-1"></i> Chờ xác nhận
+                                            </span>
+                                            {{/if}}
+
+                                            {{#if (eq this.status 'Confirmed')}}
+                                            <span class="status-badge status-confirmed">
+                                                Đã xác nhận
+                                            </span>
+                                            {{/if}}
+
+                                            {{#if (eq this.status 'Shipping')}}
+                                            <span class="status-badge status-shipping">
+                                                <i class="fas fa-shipping-fast mr-1"></i> Đang giao hàng
+                                            </span>
+                                            {{/if}}
+
+                                            {{#if (eq this.status 'Completed')}}
+                                            <span class="status-badge status-completed">
+                                                <i class="fas fa-check-double mr-1"></i> Hoàn thành
+                                            </span>
+                                            {{/if}}
+
+                                            {{#if (eq this.status 'RequestCancelled')}}
+                                            <span class="status-badge status-cancelled">
+                                                Yêu cầu hủy
+                                            </span>
+                                            {{/if}}
+
+                                            {{#if (eq this.status 'Cancelled')}}
+                                            <span class="status-badge status-cancelled">
+                                                Đã hủy
+                                            </span>
+                                            {{/if}}
+                                        </div>
                                     </td>
-                                    <td>
-                                        <span class="badge {{#if (eq this.paymentStatus 'Paid')}}badge-success{{else}}badge-secondary{{/if}}">
-                                            {{this.paymentStatus}}
-                                        </span>
+                                    <td class="text-center">
+                                        <div class="status-badge-wrapper justify-content-center">
+                                            {{#if (eq this.paymentStatus 'Paid')}}
+                                            <span class="status-badge status-completed">
+                                                Đã thanh toán
+                                            </span>
+                                            {{else}}
+                                            <span class="status-badge status-unknown">
+                                                <i class="fas fa-clock mr-1"></i> Chưa thanh toán
+                                            </span>
+                                            {{/if}}
+                                        </div>
                                     </td>
                                     <td>
                                         <a href="/order/detail/{{this._id}}" class="btn btn-sm btn-primary">Chi tiết</a>
                                         {{#if (eq this.status 'Pending')}}
-                                        <form action="/order/cancel/{{this._id}}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                                        <form action="/order/cancel/{{this._id}}" method="POST" class="d-inline"
+                                            onsubmit="return confirm('Bạn có chắc muốn gửi yêu cầu hủy đơn hàng này?');">
                                             <button type="submit" class="btn btn-sm btn-danger">Hủy</button>
                                         </form>
                                         {{/if}}
@@ -74,6 +150,53 @@
                             </tbody>
                         </table>
                     </div>
+
+                    {{#if pagination}}
+                    <!-- Pagination Begin -->
+                    <div class="pagination-container mt-4 d-flex justify-content-between align-items-center">
+                        <div class="pagination-info">
+                            Hiển thị {{orders.length}} / {{pagination.totalOrders}} đơn hàng
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                {{#if pagination.prevPage}}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{pagination.prevPage}}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                {{else}}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                {{/if}}
+
+                                {{#each pagination.pages}}
+                                <li class="page-item {{#if this.active}}active{{/if}}">
+                                    <a class="page-link" href="{{this.url}}">{{this.number}}</a>
+                                </li>
+                                {{/each}}
+
+                                {{#if pagination.nextPage}}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{pagination.nextPage}}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                {{else}}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                {{/if}}
+                            </ul>
+                        </nav>
+                    </div>
+                    <!-- Pagination End -->
+                    {{/if}}
                 </div>
                 {{else}}
                 <div class="order-history__empty text-center py-5">
@@ -90,44 +213,253 @@
 <!-- Order History Section End -->
 
 <style>
+    /* Biến màu sắc */
+    :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --secondary-color: #f9fafb;
+        --text-color: #1f2937;
+        --text-muted: #6b7280;
+        --border-color: #e5e7eb;
+
+        /* Status colors */
+        --pending-color: #f59e0b;
+        --confirmed-color: #3b82f6;
+        --shipping-color: #06b6d4;
+        --completed-color: #10b981;
+        --cancelled-color: #ef4444;
+        --unknown-color: #6b7280;
+    }
+
+    /* Badge styles */
     .badge {
         padding: 5px 10px;
         border-radius: 4px;
         font-weight: 500;
     }
-    
+
     .badge-warning {
         background-color: #ffc107;
         color: #212529;
     }
-    
+
     .badge-info {
         background-color: #17a2b8;
         color: #fff;
     }
-    
+
     .badge-primary {
         background-color: #007bff;
         color: #fff;
     }
-    
+
     .badge-success {
         background-color: #28a745;
         color: #fff;
     }
-    
+
     .badge-danger {
         background-color: #dc3545;
         color: #fff;
     }
-    
+
     .badge-secondary {
         background-color: #6c757d;
         color: #fff;
     }
-    
+
     .order-history__empty {
         background-color: #f5f5f5;
         border-radius: 8px;
+    }
+
+    /* Status Badge Styles */
+    .status-badge-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    /* Pagination Styles */
+    .pagination-container {
+        padding: 15px 0;
+    }
+
+    .pagination-info {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .pagination .page-link {
+        color: var(--primary-color);
+        border-color: var(--border-color);
+        transition: all 0.2s ease;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    .pagination .page-link:hover {
+        background-color: rgba(79, 70, 229, 0.1);
+        border-color: var(--primary-color);
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: var(--text-muted);
+        background-color: #f8f9fa;
+        border-color: var(--border-color);
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+
+    .status-badge i {
+        margin-right: 5px;
+    }
+
+    .status-badge.status-pending {
+        background-color: rgba(245, 158, 11, 0.15);
+        color: var(--pending-color);
+    }
+
+    .status-badge.status-confirmed {
+        background-color: rgba(59, 130, 246, 0.15);
+        color: var(--confirmed-color);
+    }
+
+    .status-badge.status-shipping {
+        background-color: rgba(6, 182, 212, 0.15);
+        color: var(--shipping-color);
+    }
+
+    .status-badge.status-completed {
+        background-color: rgba(16, 185, 129, 0.15);
+        color: var(--completed-color);
+    }
+
+    .status-badge.status-cancelled {
+        background-color: rgba(239, 68, 68, 0.15);
+        color: var(--cancelled-color);
+    }
+
+    .status-badge.status-unknown {
+        background-color: rgba(107, 114, 128, 0.15);
+        color: var(--unknown-color);
+    }
+
+    /* Status filters */
+    .status-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .status-filter {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1rem;
+        border-radius: 0.5rem;
+        background-color: white;
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        font-weight: 500;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .status-filter:hover {
+        border-color: var(--primary-color);
+        background-color: rgba(79, 70, 229, 0.05);
+        text-decoration: none;
+    }
+
+    .status-filter.active {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .status-filter.status-pending {
+        border-color: var(--pending-color);
+    }
+
+    .status-filter.status-pending:hover,
+    .status-filter.status-pending.active {
+        background-color: var(--pending-color);
+        color: #000;
+        border-color: var(--pending-color);
+    }
+
+    .status-filter.status-confirmed {
+        border-color: var(--confirmed-color);
+    }
+
+    .status-filter.status-confirmed:hover,
+    .status-filter.status-confirmed.active {
+        background-color: var(--confirmed-color);
+        color: white;
+        border-color: var(--confirmed-color);
+    }
+
+    .status-filter.status-shipping {
+        border-color: var(--shipping-color);
+    }
+
+    .status-filter.status-shipping:hover,
+    .status-filter.status-shipping.active {
+        background-color: var(--shipping-color);
+        color: #000;
+        border-color: var(--shipping-color);
+    }
+
+    .status-filter.status-completed {
+        border-color: var(--completed-color);
+    }
+
+    .status-filter.status-completed:hover,
+    .status-filter.status-completed.active {
+        background-color: var(--completed-color);
+        color: white;
+        border-color: var(--completed-color);
+    }
+
+    .status-filter.status-cancelled {
+        border-color: var(--cancelled-color);
+    }
+
+    .status-filter.status-cancelled:hover,
+    .status-filter.status-cancelled.active {
+        background-color: var(--cancelled-color);
+        color: white;
+        border-color: var(--cancelled-color);
+    }
+
+    /* Responsive styles */
+    @media (max-width: 992px) {
+        .status-filters {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .status-filter {
+            white-space: nowrap;
+        }
     }
 </style>

@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       try {
         const response = await fetch(`/admin/order/${orderId}/status`, {
-          method: 'PATCH',
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus })
         });
@@ -94,8 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('applyBulkAction').addEventListener('click', async function() {
 
 
-
-    
     const selectedOrders = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(checkbox => checkbox.value);
     const newStatus = document.getElementById('bulkAction').value;
 

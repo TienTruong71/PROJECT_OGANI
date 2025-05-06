@@ -6,7 +6,7 @@ module.exports.index = async (req, res) => {
     const user = req.session.user || null;
 
     // Lấy tất cả sản phẩm từ database
-    const allProducts = await Product.find({}).lean();
+    const allProducts = await Product.find({ active: "active" }).lean();
 
     // Lấy danh sách tất cả danh mục có trạng thái 'active'
     const listCat = await Category.find({ status: "active" }).lean();

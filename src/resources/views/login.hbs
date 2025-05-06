@@ -72,6 +72,17 @@
                 </div>
                 <div class="col-sm-7 authfy-panel-right">
                     <!-- authfy-login start -->
+                    {{#if message}}
+                        {{#if isSuccess}}
+                            <div id="toastMessage" class="alert alert-success alert-dismissible fade show custom-toast" role="alert">
+                                {{message}}
+                            </div>
+                        {{else}}
+                            <div id="toastMessage" class="alert alert-danger alert-dismissible fade show custom-toast" role="alert">
+                                {{message}}
+                            </div>
+                        {{/if}}
+                    {{/if}}
                     <div class="authfy-login">
                         <!-- panel-login start -->
                         <div class="authfy-panel panel-login text-center active">
@@ -154,9 +165,9 @@
                                         <h3 class="auth-title">Recover your password</h3>
                                         <p>Fill in your e-mail address below and we will send you an email with further instructions.</p>
                                     </div>
-                                    <form name="forgetForm" class="forgetForm" action="#" method="POST">
+                                    <form name="forgetForm" class="forgetForm" action="/forgot-password/send-otp" method="POST">
                                         <div class="form-group">
-                                            <input type="email" class="form-control" name="username" placeholder="Email address">
+                                            <input type="email" class="form-control" name="emailAddress" placeholder="Email address">
                                         </div>
                                         <div class="form-group">
                                             <button class="btn btn-lg btn-primary btn-block" type="submit">Recover your password</button>
@@ -172,6 +183,7 @@
                             </div>
                         </div>
                         <!-- ./panel-forgot -->
+
                     </div>
                     <!-- ./authfy-login -->
                 </div>
@@ -191,6 +203,18 @@
 
     <!-- Custom js-->
     <script src="js\login-page\custom.js"></script>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", function () {
+            const toast = document.getElementById("toastMessage");
+            if (toast) {
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                setTimeout(() => toast.remove(), 500); // remove after fade out
+            }, 3000);
+            }
+        });
+    </script>
 
 </body>
 

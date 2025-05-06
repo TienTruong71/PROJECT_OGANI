@@ -117,7 +117,7 @@
 
 
 <!-- Add to Cart JavaScript -->
-<script>
+ <script>
   document.addEventListener('DOMContentLoaded', function () {
     const addCartForm = document.getElementById('addCartForm');
 
@@ -126,8 +126,18 @@
         e.preventDefault();
 
         const formData = new FormData(this);
-        const productId = this.action.split('/').pop();
-        const quantity = formData.get('qty');
+        const quantity = parseInt(formData.get('qty'), 10);
+        const stock = parseInt(document.querySelector('ul li span').textContent, 10); // Lấy tồn kho từ thẻ <li><b>Tồn kho</b> <span>{{product.stock}}</span></li>
+
+        if (quantity > stock) {
+          Swal.fire({
+            title: 'Không đủ hàng!',
+            text: `Chỉ còn ${stock} sản phẩm trong kho.`,
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
 
         fetch(this.action, {
           method: 'POST',
@@ -151,7 +161,6 @@
                 }
               });
 
-              // Cập nhật số lượng sản phẩm trong giỏ hàng (nếu có hiển thị)
               updateCartCount();
             } else {
               Swal.fire({
@@ -174,7 +183,6 @@
       });
     }
 
-    // Hàm cập nhật số lượng sản phẩm trong giỏ hàng
     function updateCartCount() {
       fetch('/cart/count')
         .then(response => response.json())
@@ -188,6 +196,7 @@
     }
   });
 </script>
+
 
 <!--  Product Section Begin -->
 <section class="related-product">

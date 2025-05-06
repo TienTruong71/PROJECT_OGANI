@@ -1,22 +1,26 @@
 const Order = require("../../models/order.model");
-const { calculateTotalAmount, formatOrder } = require("../../config/helper");
+const User = require("../../models/user.model");
+
+const { calculateTotalAmount, formatOrder, calculateTotals } = require("../../config/helper");
+
 
 
 //lấy danh sách đơn hàng 
 module.exports.order = async (req, res) => {
   try {
-
+    const user = req.session.user || null;
     let find = {};
       if (req.query.status) {
         find.status = req.query.status;
       }
-
-    const orders = await Order.find(find).lean()
-
+    const orders = await Order.find(find)
+    .populate('userId', 'username emailAddress')
+    .lean()
     const ordersWithTotal = orders.map(order => formatOrder(order));
 
        res.render("admin/manage_order", {
       pageTitle: "Trang quản lý đơn hàng",
+      user,
       orders: ordersWithTotal
     });
 
@@ -33,24 +37,27 @@ module.exports.getOrderDetail = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const order = await Order.findById(id).lean();
+    // Lấy order và populate fullName + emailAddress từ userId
+    const order = await Order.findById(id)
+      .populate('userId', 'fullName emailAddress phoneNumber rank')
+      .lean();
 
     if (!order) {
       return res.status(404).send("Không tìm thấy đơn hàng");
     }
 
     const formattedOrder = formatOrder(order);
-
     res.render("admin/order_detail", {
       pageTitle: "Chi tiết đơn hàng",
-      order: formattedOrder
+      order: formattedOrder,
+      customerName: order.userId.fullName,
+      customerEmail: order.userId.emailAddress
     });
   } catch (error) {
     console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
     res.status(500).send("Lỗi máy chủ");
   }
 };
-
 
 
 
@@ -78,13 +85,17 @@ module.exports.updateOrderStatus = async (req, res) => {
           console.log(`Đơn hàng ${id} đã được đặt lại trạng thái thanh toán thành chưa thanh toán`);
       }
       
+      // Sử dụng hàm calculateTotals để cập nhật lại các giá trị tổng tiền
+      calculateTotals(order);
+      
       await order.save();
 
       return res.json({ 
           success: true, 
           message: 'Cập nhật trạng thái thành công', 
           updatedStatus: status,
-          paymentStatus: order.paymentStatus
+          paymentStatus: order.paymentStatus,
+          totalAmount: order.totalAmount
       });
   } catch (error) {
       console.error(error);
@@ -117,7 +128,6 @@ module.exports.applyBulkAction = async (req, res) => {
       console.log(`Tất cả đơn hàng được chọn sẽ được đặt lại trạng thái thanh toán thành chưa thanh toán`);
     }
     
-    // Cập nhật trạng thái cho tất cả đơn hàng được chọn
     const result = await Order.updateMany(
       { _id: { $in: orderIds } },
       { $set: updateData }

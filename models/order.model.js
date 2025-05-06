@@ -18,7 +18,7 @@ const ShippingSchema = new mongoose.Schema({
 });
 
 const PromotionSchema = new mongoose.Schema({
-    title: { type: String },
+    title: { type: String, required: true },
     description: { type: String },
     percentDiscount: { type: Number },
     code: { type: String }
@@ -34,7 +34,7 @@ const orderSchema = new mongoose.Schema(
     note: { type: String },
     status: { 
         type: String, 
-        enum: ['Pending', 'Confirmed', 'Shipping', 'Completed', 'Cancelled'],
+        enum: ['Pending', 'Confirmed', 'Shipping', 'Completed','RequestCancelled','Cancelled'],
         default: 'Pending'
     },
     subtotal: { type: Number, required: true }, 
@@ -44,21 +44,6 @@ const orderSchema = new mongoose.Schema(
     paymentStatus: { type: String, enum: ['Unpaid', 'Paid'], default: 'Unpaid' },
     orderDate: { type: Date, default: Date.now }
 }, { timestamps: true }); 
-
-orderSchema.methods.calculateTotals = function() {
-    this.subtotal = this.items.reduce((total, item) => {
-        item.total = item.price * item.quantity;
-        return total + item.total;
-    }, 0);
-    
-    this.discount = this.promotions.reduce((total, promo) => {
-        return total + (this.subtotal * (promo.percentDiscount || 0) / 100);
-    }, 0);
-    
-    this.totalAmount = this.subtotal + this.vat + (this.shipping?.shippingFee || 0) - this.discount;
-    
-    return this.totalAmount;
-};
 
 const Order = mongoose.model("Order", orderSchema, "orders");
 
