@@ -7,6 +7,7 @@ const infoRoute = require("./info.route")
 const orderRoute = require("./order.route")
 
 function routeClient(app) {
+
     app.use("/product", productRoute);
     app.use("/cart", cartRoute);
     app.use("/info", infoRoute);

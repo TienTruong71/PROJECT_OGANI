@@ -7,7 +7,7 @@ const catalogController = require('../../controllers/client/catalog.controller')
 router.get('/', catalogController.index);
 
 // Route để hiển thị sản phẩm theo danh mục
-router.get('/:categoryName', catalogController.show);
+router.get('/:slug', catalogController.show);
 
 
 module.exports = router;

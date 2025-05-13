@@ -1260,6 +1260,30 @@ ol {
 /*---------------------
   Shop Grid
 -----------------------*/
+.pagination ul {
+	display: flex;
+	list-style: none;
+	justify-content: center;
+	padding: 0;
+  }
+  
+  .pagination ul li {
+	margin: 0 5px;
+  }
+  
+  .pagination ul li a {
+	display: block;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	color: #333;
+	text-decoration: none;
+  }
+  
+  .pagination ul li.active a {
+	background-color: #7fad39;
+	color: #fff;
+	border-color: #7fad39;
+  }
 
 .product {
 	padding-top: 80px;

@@ -50,7 +50,27 @@ const formatOrder = (order) => {
   }
 };
   
-  module.exports = {
-    calculateTotalAmount,
-    formatOrder
-  };
+  // Hàm tính toán tổng tiền cho đơn hàng - chuyển từ model sang helper theo mô hình MVC
+const calculateTotals = (order) => {
+  // Tính tổng tiền của các sản phẩm
+  order.subtotal = order.items.reduce((total, item) => {
+    item.total = item.price * item.quantity;
+    return total + item.total;
+  }, 0);
+
+  // Tính tổng giảm giá từ các khuyến mãi
+  order.discount = (order.promotions || []).reduce((total, promo) => {
+    return total + (order.subtotal * (promo.percentDiscount || 0) / 100);
+  }, 0);
+
+  // Tính tổng tiền cuối cùng
+  order.totalAmount = order.subtotal + (order.vat || 0) + (order.shipping?.shippingFee || 0) - order.discount;
+
+  return order.totalAmount;
+};
+
+module.exports = {
+  calculateTotalAmount,
+  formatOrder,
+  calculateTotals
+};

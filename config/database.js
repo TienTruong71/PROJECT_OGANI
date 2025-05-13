@@ -2,13 +2,10 @@ const mongoose = require('mongoose');
 
 module.exports.connect = async () => {
   try {
-    const uri = process.env.MONGODB_URI;
-    if (!uri) {
-      throw new Error('MongoDB URL is not defined in .env file');
-    }
-    await mongoose.connect(uri); // Loại bỏ các tùy chọn không cần thiết
-    console.log('✅ Connected to MongoDB successfully!');
+    await mongoose.connect("mongodb://localhost:27017/shopit");
+    console.log("Connected Successful!")
   } catch (error) {
-    console.error('❌ MongoDB connection failed:', error.message);
+    console.log("Connected Failure")
   }
-};
+}
+

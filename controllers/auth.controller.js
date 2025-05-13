@@ -13,7 +13,10 @@ class AuthController {
             // Kiểm tra nếu email hoặc username đã tồn tại
             const existingUser = await User.findOne({ $or: [{ username }, { emailAddress }] });
             if (existingUser) {
-                return res.status(400).json({ message: "Username hoặc Email đã được sử dụng." });
+                return res.render("login", { 
+                    message: "Username hoặc Email đã được sử dụng.",
+                    isSuccess: false
+                });
             }
 
             // Tạo người dùng mới
@@ -27,9 +30,15 @@ class AuthController {
             // Lưu người dùng vào cơ sở dữ liệu
             await user.save();
 
-            res.redirect("/login");
+            res.render("login", {
+                message: "Đăng ký thành công.",
+                isSuccess: true
+            });
         } catch (error) {
-            res.status(500).json({ message: "Lỗi server.", error });
+            res.render("login", {
+                message: "Lỗi server. Vui lòng thử lại sau.",
+                isSuccess: false
+            });
         }
     }
 
@@ -40,14 +49,19 @@ class AuthController {
             // Tìm người dùng theo email
             const user = await User.findOne({ emailAddress });
             if (!user) {
-                return res.status(400).json({ message: "Email hoặc mật khẩu không đúng." });
-
+                return res.render("login", { 
+                    message: "Email hoặc mật khẩu không đúng.",
+                    isSuccess: false
+                });
             }
 
             // Kiểm tra mật khẩu
             const isMatch = await user.comparePassword(password);
             if (!isMatch) {
-                return res.status(400).json({ message: "Email hoặc mật khẩu không đúng." });
+                return res.render("login", { 
+                    message: "Email hoặc mật khẩu không đúng.",
+                    isSuccess: false
+                });
             }
 
             // Lưu thông tin người dùng vào session
@@ -62,7 +76,10 @@ class AuthController {
             // Chuyển hướng đến trang chủ
             res.redirect("/waiting");
         } catch (error) {
-            res.status(500).json({ message: "Lỗi server.", error });
+            return res.render("login", { 
+                message: "Email hoặc mật khẩu không đúng.", 
+                isSuccess: false
+            });
         }
     }
 
@@ -72,7 +89,6 @@ class AuthController {
             req.session.destroy((err) => {
                 if (err) {
                     console.error("Lỗi khi xóa session:", err);
-                    return res.status(500).json({ message: "Lỗi server." });
                 }
 
                 // Chuyển hướng về trang đăng nhập

@@ -1,78 +1,81 @@
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="Order Management Page" />
-    <meta name="author" content="" />
-    <title>Quản lý đơn hàng - Admin Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="/css/styles_admin.css" rel="stylesheet" />
-    <link href="/css/style_order_management.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-</head>
-<body class="sb-nav-fixed">
-    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <a class="navbar-brand ps-3" href="/admin">Admin Page</a>
-        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
-        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-          
-        </form>
-        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-user fa-fw"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#!">{{user.username}}</a></li>
-                    <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Tables - SB Admin</title>
+        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+        <link href="/css/styles_admin.css" rel="stylesheet" />
+        <link href="/css/style_order_management.css" rel="stylesheet" />
 
-    <div id="layoutSidenav">
-        <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        <div class="sb-sidenav-menu-heading">Manage</div>
-                        <a class="nav-link" href="/admin/order">
-                            <div class="sb-nav-link-icon"><i class="fas fa-money-bill"></i></div>
-                            Order Management
-                        </a>
-                        <a class="nav-link" href="/admin/category">
-                            <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
-                            Category Management
-                        </a>
-                        <a class="nav-link" href="/admin/customer">
-                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                            Customer Management
-                        </a>
-                        <a class="nav-link" href="/admin/staff">
-                            <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>
-                            Staff Management
-                        </a>
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" href="/admin">Trang quản lý </a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#!">{{user.username}}</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="/logout">Đăng xuất</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Quản lý</div>
+                            <a class="nav-link" href="/admin/category">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-list"></i></div>
+                                Quản lý danh mục
+                            </a>
+                            <a class="nav-link" href="/admin/order">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-money-bill"></i></div>
+                                Quản lý đơn hàng 
+                            </a>
+                            <a class="nav-link" href="/admin/customer">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                                Quản lý khách hàng
+                            </a>
+                            <a class="nav-link" href="/admin/staff">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-user-tie"></i></div>
+                                Quản lý nhân viên
+                            </a>
+                             <a class="nav-link" href="/admin/support">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-user-tie"></i></div>
+                                Trung tâm hỗ trợ
+                            </a>
+                        </div>
+                        </div>
                     </div>
-                </div>
-                <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    Start Bootstrap
-                </div>
-            </nav>
-        </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Xin chào,</div>
+                        {{user.username}}
+                    </div>
+                </nav>
+            </div>
 
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Order Management</h1>
+                    <h1 class="mt-4">Quản lý đơn hàng</h1>
 
                     <ul class="nav nav-pills mb-4 gap-2 flex-wrap status-filters" id="orderTabs" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -89,6 +92,9 @@
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link status-filter status-completed" data-status="Completed">Hoàn tất đơn hàng</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link status-filter status-cancelled" data-status="RequestCancelled">Yêu cầu hủy</button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link status-filter status-cancelled" data-status="Cancelled">Đã hủy</button>
@@ -142,13 +148,13 @@
                                                 <td><span class="order-id">#{{this._id}}</span></td>
                                                 <td>
                                                     <div class="customer-info">
-                                                        <div class="customer-name">{{this.customer.fullName}}</div>
-                                                        <div class="customer-email text-muted small">{{this.customer.emailAddress}}</div>
+                                                        <div class="customer-name">{{this.userId.username}}</div>
+                                                        <div class="customer-email text-muted small">{{this.userId.emailAddress}}</div>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="product-list">
-                                                        {{#each this.product}}
+                                                        {{#each this.items}}
                                                         <div class="product-item">
                                                             <span class="product-name">{{this.name}}</span>
                                                             <span class="product-details text-muted small">
@@ -180,6 +186,10 @@
                                                         <span class="status-badge status-cancelled">
                                                             <i class=""></i>Đã hủy
                                                         </span>
+                                                    {{else if (eq this.status "RequestCancelled")}}
+                                                    <span class="status-badge status-cancelled">
+                                                        <i class=""></i>Yêu cầu hủy
+                                                    </span>
                                                     {{else}}
                                                         <span class="status-badge status-unknown">
                                                             <i class=""></i>Không rõ
@@ -196,17 +206,13 @@
                                                         
                                                         {{#if (eq this.status "Pending")}}
                                                         <button class="btn btn-sm btn-success btn-update-status" data-id="{{this._id}}" data-status="Confirmed">Xác nhận</button>
-                                                        <button class="btn btn-sm btn-danger btn-update-status" data-id="{{this._id}}" data-status="Cancelled">Hủy đơn</button>
+                                                         <button class="btn btn-sm btn-danger btn-update-status" data-id="{{this._id}}" data-status="Cancelled">Hủy đơn </button>
                                                         {{else if (eq this.status "Confirmed")}}
                                                         <button class="btn btn-sm btn-primary btn-update-status" data-id="{{this._id}}" data-status="Shipping">Vận chuyển</button>
-                                                        <button class="btn btn-sm btn-warning btn-update-status" data-id="{{this._id}}" data-status="Pending">Khôi phục</button>
                                                         {{else if (eq this.status "Shipping")}}
                                                         <button class="btn btn-sm btn-success btn-update-status" data-id="{{this._id}}" data-status="Completed">Hoàn tất</button>
-                                                        <button class="btn btn-sm btn-warning btn-update-status" data-id="{{this._id}}" data-status="Confirm">Khôi phục</button>
-                                                        {{else if (eq this.status "Completed")}}
-                                                        <button class="btn btn-sm btn-warning btn-update-status" data-id="{{this._id}}" data-status="Shipping">Khôi phục</button>
-                                                        {{else}}
-                                                        <button class="btn btn-sm btn-warning btn-update-status" data-id="{{this._id}}" data-status="Pending">Khôi phục</button>
+                                                        {{else if (eq this.status "RequestCancelled")}}
+                                                        <button class="btn btn-sm btn-danger btn-update-status" data-id="{{this._id}}" data-status="Cancelled">Xác nhận hủy</button>
                                                         {{/if}}
     
                                                     </div>
@@ -225,7 +231,7 @@
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">&copy; 2025 Admin Page của nhóm 1</div>
+                            <div class="text-muted">Copyright &copy; Admin page của nhóm 1</div>
                         <div>
                             <a href="#">Privacy Policy</a>
                             &middot;
@@ -236,8 +242,6 @@
             </footer>
         </div>
     </div>
-
-    <!-- Giữ nguyên các script để đảm bảo JS hoạt động -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="/js/scripts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>

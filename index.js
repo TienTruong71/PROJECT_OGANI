@@ -13,8 +13,11 @@ const routeClient = require("./routes/client/index.route");
 const routeAdmin = require("./routes/admin/index.route");
 const authRoute = require("./routes/auth.route");
 const waitingRoute = require("./routes/waiting.route");
+const forgotRoute = require("./routes/forgot.route");
 const systemConfig = require("./config/system.js")
 const loadCatalogList = require('./middleware/catalog.middleware.js');
+
+
 const port = process.env.PORT;
 
 app.use(express.static(path.join(__dirname, 'src', 'public')));
@@ -46,14 +49,20 @@ app.engine('hbs', hbs.engine({
       if (!number) return '0';
       return number.toLocaleString("vi-VN") + 'đ';
     },
-    multiply: (a, b) => {
-      return a * b;
-    },
+    multiply: (a, b) => a * b,
     formatDate: (date, format) => {
       const safeFormat = typeof format === 'string' ? format : 'DD/MM/YYYY';
       return moment(date).format(safeFormat);
-    }
-  }
+    },
+    range: (start, end) => {
+      const range = [];
+      for (let i = start; i <= end; i++) {
+        range.push(i);
+      }
+      return range;
+    },
+    isActive: (page, currentPage) => (page === currentPage ? 'active' : ''),
+  },
 }));
 
 // Middleware tính cartCount
@@ -82,6 +91,7 @@ routeAdmin(app);
 routeClient(app);
 app.use("/", authRoute);
 app.use("/", waitingRoute);
+app.use("/", forgotRoute);
 app.use('/', catalogRouter);
 
 app.locals.prefixAdmin = systemConfig.prefixAdmin;

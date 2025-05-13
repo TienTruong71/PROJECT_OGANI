@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>View Customer - Admin</title>
+  <title>Xem khách hàng - Trang Quản Trị</title>
   <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
   <link href="/css/styles_admin.css" rel="stylesheet" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 <body class="sb-nav-fixed">
   <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-    <a class="navbar-brand ps-3" href="/admin">Admin Page</a>
+    <a class="navbar-brand ps-3" href="/admin">Trang Quản Trị</a>
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
       <div class="input-group">
-        <input class="form-control" type="text" placeholder="Search for..." />
+        <input class="form-control" type="text" placeholder="Tìm kiếm..." />
         <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
       </div>
     </form>
@@ -27,7 +27,7 @@
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
           <li><a class="dropdown-item" href="#">{{user.username}}</a></li>
           <li><hr class="dropdown-divider" /></li>
-          <li><a class="dropdown-item" href="/logout">Logout</a></li>
+          <li><a class="dropdown-item" href="/logout">Đăng xuất</a></li>
         </ul>
       </li>
     </ul>
@@ -38,27 +38,27 @@
       <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
         <div class="sb-sidenav-menu">
           <div class="nav">
-            <div class="sb-sidenav-menu-heading">Manage</div>
+            <div class="sb-sidenav-menu-heading">Quản lý</div>
             <a class="nav-link" href="/admin/category">
               <div class="sb-nav-link-icon"><i class="fa-solid fa-list"></i></div>
-              Category Manage
+              Quản lý danh mục
             </a>
             <a class="nav-link" href="/admin/order">
               <div class="sb-nav-link-icon"><i class="fa-solid fa-money-bill"></i></div>
-              Order Manage
+              Quản lý đơn hàng
             </a>
             <a class="nav-link" href="/admin/customer">
               <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
-              Customer Manage
+              Quản lý khách hàng
             </a>
             <a class="nav-link" href="/admin/staff">
               <div class="sb-nav-link-icon"><i class="fa-solid fa-user-tie"></i></div>
-              Staff Manage
+              Quản lý nhân viên
             </a>
           </div>
         </div>
         <div class="sb-sidenav-footer">
-          <div class="small">Welcome,</div>
+          <div class="small">Xin chào,</div>
           {{user.username}}
         </div>
       </nav>
@@ -71,7 +71,7 @@
           <div class="card my-4">
             <div class="card-body d-flex">
               <div class="me-4 text-center">
-                <img src="{{customer.avatar}}" alt="Avatar" class="img-thumbnail mb-3" width="150" height="150" onerror="this.src='https://png.pngtree.com/png-clipart/20230811/original/pngtree-avatar-human-fashion-male-vector-picture-image_10398746.png'">
+                <img src="{{customer.avatar}}" alt="Ảnh đại diện" class="img-thumbnail mb-3" width="150" height="150" onerror="this.src='https://png.pngtree.com/png-clipart/20230811/original/pngtree-avatar-human-fashion-male-vector-picture-image_10398746.png'">
               </div>
               <div>
                 <p><strong>Tên đăng nhập:</strong> {{customer.username}}</p>
@@ -94,11 +94,11 @@
       <footer class="py-4 bg-light mt-auto">
         <div class="container-fluid px-4">
           <div class="d-flex align-items-center justify-content-between small">
-            <div class="text-muted">Copyright &copy; Admin page của nhóm 1</div>
+            <div class="text-muted">Bản quyền &copy; Trang quản trị của nhóm 1</div>
             <div>
-              <a href="#">Privacy Policy</a>
+              <a href="#">Chính sách bảo mật</a>
               &middot;
-              <a href="#">Terms &amp; Conditions</a>
+              <a href="#">Điều khoản &amp; điều kiện</a>
             </div>
           </div>
         </div>
