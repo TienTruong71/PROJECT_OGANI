@@ -17,6 +17,12 @@ class InfoController {
             if (!userDoc) {
                 return res.status(404).send('Không tìm thấy thông tin người dùng');
             }
+
+            // Verify session token
+            if (userDoc.sessionToken && userDoc.sessionToken !== req.session.sessionToken) {
+                req.session.destroy();
+                return res.redirect('/login');
+            }
             
             // Chuyển đổi Mongoose document thành JavaScript object thông thường
             const user = userDoc.toObject();

@@ -14,7 +14,8 @@ const userSchema = new mongoose.Schema({
     avatar: { type: String }, // Avatar nên để string (URL hoặc đường dẫn file)
     joinAt: { type: Date, default: Date.now }, // Ngày tham gia, mặc định là ngày hiện tại
     status: { type: String, enum: ["active", "locked"], default: "active" },
-    rank: { type: String, enum: ["SILVER", "GOLD", "DIAMOND"],default: "SILVER"}
+    rank: { type: String, enum: ["SILVER", "GOLD", "DIAMOND"],default: "SILVER"},
+    sessionId: { type: String, index: true } // Thêm sessionID để biết user đang sử dụng session nào
 });
 
 // Mã hóa mật khẩu trước khi lưu
